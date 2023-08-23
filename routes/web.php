@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +20,14 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('layouts.dash_layout');
 })->middleware(['auth'])->name('dashboard');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/edit_profile', [UserController::class, 'index'])->name('edit_profile');
+    Route::post('/update_profile/{id}', [UserController::class, 'update'])->name('update_profile');
+    Route::get('/conatct', [ContactController::class, 'index'])->name('contact');
+    Route::post('/store_contact', [ContactController::class, 'store'])->name('store_contact');
+});
 
 require __DIR__.'/auth.php';
