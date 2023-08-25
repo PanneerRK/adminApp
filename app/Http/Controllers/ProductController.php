@@ -4,38 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Image;
 use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {        
         $products = Product::get();
         return view('pages.product', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('pages.create_product');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {        
         $request->validate([
@@ -63,6 +48,10 @@ class ProductController extends Controller
             $product->prod_image_path = $imageName;
             $product->save();
 
+            $image = new Image();
+            $image->image_path = $imageName;            
+            $product->images()->save($image);
+
              return response()->json(['success'=>'Product saved successfully']);
             
         } catch (Exception $e) {
@@ -70,37 +59,15 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $product = Product::find($id);
-        // dd($products);
-        return view('pages.update_product', compact('product'));
+        foreach ($product->images as $value) {
+            $img_path = $value->image_path;
+        }
+        return view('pages.update_product', compact('product','img_path'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -137,6 +104,7 @@ class ProductController extends Controller
             $product->prod_description = $request->prod_description ;
             if(isset($imageName)) {
                 $product->prod_image_path = $imageName;
+                $product->images()->update(['image_path' =>$imageName]);
             }
             $product->save();
 
@@ -147,15 +115,11 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         Product::find($id)->delete();  
         return response()->json(['success'=>'Product Deleted Successfully!']);
     }
+
+    
 }

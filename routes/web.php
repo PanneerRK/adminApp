@@ -51,6 +51,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/update/{id}', [ProductController::class, 'update'])->name('product.update');
     });
 
+    Route::get('/testpoly', [ProductController::class, 'testPloy'])->name('product.test');
+
     // Route::resource('product', ProductController::class);
 });
 

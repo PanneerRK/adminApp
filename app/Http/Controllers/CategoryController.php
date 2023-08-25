@@ -3,39 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Image;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+     public function index()
     {
         $categories = Category::get();
         return view('pages.category', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('pages.create_category');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+   
     public function store(Request $request)
     {
         $request->validate([
@@ -59,43 +44,26 @@ class CategoryController extends Controller
             $category->cat_image_path = $imageName;
             $category->save();
 
-             return response()->json(['success'=>'Category saved successfully']);
+            $image = new Image();
+            $image->image_path = $imageName;            
+            $category->images()->save($image);
+
+            return response()->json(['success'=>'Category saved successfully']);
             
         } catch (Exception $e) {
             return $e->getMessage();
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $categories = Category::find($id);
+        // foreach ($categories->images as $value) {
+        //     $image_path = $value->image_path;
+        // }
         return view('pages.update_category', compact('categories'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -128,6 +96,7 @@ class CategoryController extends Controller
             $category->cat_description = $request->cat_description;
             if(isset($imageName)) {
                 $category->cat_image_path = $imageName;
+                $category->images()->update(['image_path' =>$imageName]);
             }
             $category->save();
 
@@ -136,16 +105,8 @@ class CategoryController extends Controller
         } catch (Exception $e) {
             return $e->getMessage();
         }
-
-        
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         Category::find($id)->delete();  
