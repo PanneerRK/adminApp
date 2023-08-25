@@ -58,10 +58,8 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $categories = Category::find($id);
-        // foreach ($categories->images as $value) {
-        //     $image_path = $value->image_path;
-        // }
-        return view('pages.update_category', compact('categories'));
+        $img_path = $categories->images->image_path;
+        return view('pages.update_category', compact('categories','img_path'));
     }
 
     public function update(Request $request, $id)

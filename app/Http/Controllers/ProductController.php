@@ -61,10 +61,9 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = Product::find($id);
-        foreach ($product->images as $value) {
-            $img_path = $value->image_path;
-        }
+        $product = Product::find($id);        
+        $img_path = $product->images->image_path;
+       
         return view('pages.update_product', compact('product','img_path'));
     }
 

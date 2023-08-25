@@ -31,7 +31,7 @@
                 <span class="text-danger" id="desc-input-error"></span>
               </div> 
               <div class="mb-3 col-md-3">
-                <span>Old Image : </span><img width="50%" src="{{ asset('storage/images/'.$categories->cat_image_path) }}">
+                <span>Old Image : </span><img width="50%" src="{{ asset('storage/images/'.$img_path) }}">
               </div>
               <div class="mb-3 col-md-3">
                 <span>New Image : </span><img id="preview-image" width="50%" >
