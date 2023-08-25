@@ -31,7 +31,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/conatct', [ContactController::class, 'index'])->name('contact');
     Route::post('/store_contact', [ContactController::class, 'store'])->name('store_contact');
 
-    Route::resource('category', CategoryController::class);
+    // Route::resource('category', CategoryController::class);
+    Route::get('/category', [CategoryController::class, 'index'])->name('category');
+    Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');
+    Route::post('/category/store', [CategoryController::class, 'store'])->name('category.store');
+
     Route::resource('product', ProductController::class);
 });
 

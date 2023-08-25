@@ -57,19 +57,68 @@
     @endif
     
       <a href="{{route('dashboard')}}" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-home-circle"></i>
+        <i class="menu-icon tf-icons bx bxs-home-circle"></i>
         <div data-i18n="Analytics">Dashboard</div>
       </a>
     </li>
 
-    <!-- Layouts --> 
+
+    <!-- Products --> 
     @if($cur_route == "edit_profile")
     <li class="menu-item active">
     @else
     <li class="menu-item">
     @endif  
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-dock-top"></i>
+        <i class="menu-icon tf-icons bx bxs-cart-alt"></i>
+        <div data-i18n="Products">Products</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item">
+          <a href="{{route('edit_profile')}}" class="menu-link">
+            <div data-i18n="Product List">Products List</div>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{{route('product.create')}}" class="menu-link">
+            <div data-i18n="Add product">Add Product</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Categories --> 
+    @if($cur_route == "edit_profile")
+    <li class="menu-item active">
+    @else
+    <li class="menu-item">
+    @endif  
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bxs-category-alt"></i>
+        <div data-i18n="Categories">Categories</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item">
+          <a href="{{route('category')}}" class="menu-link">
+            <div data-i18n="Category list">Category List</div>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="{{route('category.create')}}" class="menu-link">
+            <div data-i18n="Add Category">Add Category</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Accounts --> 
+    @if($cur_route == "edit_profile")
+    <li class="menu-item active">
+    @else
+    <li class="menu-item">
+    @endif  
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bxs-user-account"></i>
         <div data-i18n="Account Settings">Account Settings</div>
       </a>
       <ul class="menu-sub">
@@ -80,6 +129,7 @@
         </li>
       </ul>
     </li>
+    
     <!-- Contact -->
     @if($cur_route == 'contact')
     <li class="menu-item active">
@@ -87,7 +137,7 @@
     <li class="menu-item">
     @endif 
       <a href="{{ route('contact') }}" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-detail"></i>
+        <i class="menu-icon tf-icons bx bxs-contact"></i>
         <div data-i18n="Contact">Contact</div>
       </a>
     </li>
