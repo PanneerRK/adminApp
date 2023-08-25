@@ -49,7 +49,6 @@ class CategoryController extends Controller
         
         $slug_name = $request->cat_name;
         $slug = Str::slug($slug_name, '_');
-        // dd($slug);
 
         try {
 
@@ -86,7 +85,8 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $categories = Category::find($id);
+        return view('pages.update_category', compact('categories'));
     }
 
     /**
@@ -98,7 +98,46 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'cat_name' => ['required', 'string', 'max:255'],
+            'cat_description' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $input = $request->all();
+
+        if ($request->file('cat_image_path')) {
+            $request->validate([
+                'cat_image_path' => ['required','mimes:png,jpg,jpeg','max:2048'],
+            ]);
+
+            $imageName = time().'.'.$request->file('cat_image_path')->getClientOriginalExtension();
+            $path = $request->file('cat_image_path')->storeAs('public/images',$imageName);
+
+        } else {
+            unset($input['cat_image_path']);
+        }
+
+        $slug_name = $request->cat_name;
+        $slug = Str::slug($slug_name, '_');
+
+        try {
+
+            $category = Category::find($id);
+            $category->cat_name = $request->cat_name;
+            $category->cat_slug = $slug;
+            $category->cat_description = $request->cat_description;
+            if(isset($imageName)) {
+                $category->cat_image_path = $imageName;
+            }
+            $category->save();
+
+            return response()->json(['success'=>'Category updated successfully']);
+            
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+
+        
     }
 
     /**
@@ -109,6 +148,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Category::find($id)->delete();  
+        return response()->json(['success'=>'Category Deleted Successfully!']);
     }
 }

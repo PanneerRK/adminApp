@@ -49,7 +49,7 @@
 
   <ul class="menu-inner py-1">
     <!-- Dashboard -->
-    @php $cur_route = Route::current()->getName() @endphp
+    @php $cur_route = request()->path() @endphp
     @if($cur_route == "dashboard")
     <li class="menu-item active">
     @else
@@ -63,8 +63,8 @@
     </li>
 
 
-    <!-- Products --> 
-    @if($cur_route == "edit_profile")
+    <!-- Products -->     
+    @if($cur_route == "product" || $cur_route == "product/create")
     <li class="menu-item active">
     @else
     <li class="menu-item">
@@ -75,8 +75,8 @@
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
-          <a href="{{route('edit_profile')}}" class="menu-link">
-            <div data-i18n="Product List">Products List</div>
+          <a href="{{route('product.index')}}" class="menu-link">
+            <div data-i18n="Product List">Product List</div>
           </a>
         </li>
         <li class="menu-item">
@@ -88,7 +88,7 @@
     </li>
 
     <!-- Categories --> 
-    @if($cur_route == "edit_profile")
+    @if($cur_route == "category" || $cur_route == "category/create")
     <li class="menu-item active">
     @else
     <li class="menu-item">

@@ -12,29 +12,29 @@
         </div>           
         <!-- Account -->
         <div class="card-body">
-          <form action="{{ route('product.store') }}" method="POST" id="create-product" enctype="multipart/form-data">
+          <form action="{{ route('product.update', $product->id) }}" method="POST" id="update-product" enctype="multipart/form-data">
             @csrf
             <div class="row">
               <div class="mb-3 col-md-6">
                 <label for="Product Name" class="form-label">Product Name</label>
-                <input class="form-control" type="text" id="prodName" name="prod_name" value="{{old('prod_name')}}" autofocus/>
+                <input class="form-control" type="text" id="prodName" name="prod_name" value="{{ $product->prod_name}}" autofocus/>
                 <span class="text-danger" id="prodNameErr"></span>
               </div> 
               
               <div class="mb-3 col-md-6">
                 <label for="Brand Name" class="form-label">Brand Name</label>
-                <input class="form-control" type="text" id="prodBrand" name="prod_brand" value="{{old('prod_brand')}}" autofocus/>
+                <input class="form-control" type="text" id="prodBrand" name="prod_brand" value="{{ $product->prod_brand}}" />
                 <span class="text-danger" id="prodBrandErr"></span>
               </div>
 
               <div class="mb-3 col-md-6">
                 <label for="Product Price" class="form-label">Product Price</label>
-                <input class="form-control" type="number" id="prodPrice" name="prod_price" value="{{old('prod_price')}}" autofocus/>
+                <input class="form-control" type="number" id="prodPrice" name="prod_price" value="{{ $product->prod_price}}" />
                 <span class="text-danger" id="prodPriceErr"></span>
               </div>
               <div class="mb-3 col-md-6">
                 <label for="Product Tax" class="form-label">Product Tax</label>
-                <input class="form-control" type="number" id="prodTax" name="prod_tax" value="{{old('prod_tax')}}" autofocus/>
+                <input class="form-control" type="number" id="prodTax" name="prod_tax" value="{{ $product->prod_tax}}" />
                 <span class="text-danger" id="prodTaxErr"></span>
               </div>
 
@@ -44,7 +44,7 @@
                   <option value="" selected>-- Select Anyone --</option>
                   @php  $catgories =  \App\Models\Category::get(); @endphp
                   @foreach ($catgories as $cat)
-                      <option value="{{$cat->id}}">{{$cat->cat_name}}</option>
+                      <option value="{{ $cat->id }}" {{ ( $cat->id == $product->cat_id) ? 'selected' : '' }}> {{ $cat->cat_name }} </option>
                   @endforeach
                 </select>
                 <span class="text-danger" id="categoryErr"></span>
@@ -56,12 +56,15 @@
               </div>  
               <div class="mb-3 col-md-6">
                 <label for="Description" class="form-label">Description</label>
-                <textarea class="form-control" name="prod_description" id="prodDescription" rows="3"></textarea>
+                <textarea class="form-control" name="prod_description" id="prodDescription" rows="3">{{ $product->prod_description }}</textarea>
                 <span class="text-danger" id="prodDescErr"></span>
               </div> 
               
-              <div class="mb-3 col-md-6">
-                <img id="preview-image" width="200px">
+              <div class="mb-3 col-md-3">
+                <span>Old Image : </span><img width="50%" src="{{ asset('storage/images/'.$product->prod_image_path) }}">
+              </div>
+              <div class="mb-3 col-md-3">
+                <span>New Image : </span><img id="preview-image" width="50%" >
               </div>
             </div>
             <div class="mt-2">
@@ -77,60 +80,51 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" ></script>
 <script type="text/javascript">
-  $.ajaxSetup({
-      headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      }
-  });
-
-  $('#prodImagePath').change(function(){    
-      let reader = new FileReader();
- 
-      reader.onload = (e) => { 
-          $('#preview-image').attr('src', e.target.result); 
-      }   
-      reader.readAsDataURL(this.files[0]); 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+  
+    $('#prodImagePath').change(function(){    
+        let reader = new FileReader();
    
-  });
-
-  $('#create-product').submit(function(e) {
-         e.preventDefault();
-         let formData = new FormData(this);
-         $('#prodNameErr').text('');
-         $('#prodBrandErr').text('');
-         $('#prodPriceErr').text('');
-         $('#prodTaxErr').text('');
-         $('#categoryErr').text('');
-         $('#imageErr').text('');
-         $('#prodDescErr').text('');
-
-         $.ajax({
-            type:'POST',
-            url: "{{ route('product.store') }}",
-             data: formData,
-             contentType: false,
-             processData: false,
-             success: (response) => {
-               if (response) {
-                 this.reset();
-                 $('#preview-image').remove();
-                 $('#successMsg').show();
-                //  alert('Category saved successfully');
+        reader.onload = (e) => { 
+            $('#preview-image').attr('src', e.target.result); 
+        }   
+        reader.readAsDataURL(this.files[0]); 
+     
+    });
+  
+    $('#update-product').submit(function(e) {
+           e.preventDefault();
+  
+           let formData = new FormData(this);
+  
+           $.ajax({
+              type:'POST',
+              url: "{{ route('product.update', $product->id) }}",
+               data: formData,
+               contentType: false,
+               processData: false,
+               success: (response) => {
+                 if (response) {
+                      alert('Product updated successfully');
+                      window.location.reload();
+                 }
+               },
+               error: function(response){
+                    $('#prodNameErr').text(response.responseJSON.errors.prod_name);
+                    $('#prodBrandErr').text(response.responseJSON.errors.prod_brand);
+                    $('#prodPriceErr').text(response.responseJSON.errors.prod_price);
+                    $('#prodTaxErr').text(response.responseJSON.errors.prod_tax);
+                    $('#categoryErr').text(response.responseJSON.errors.category);
+                    $('#imageErr').text(response.responseJSON.errors.prod_image_path);
+                    $('#prodDescErr').text(response.responseJSON.errors.prod_description);
                }
-             },
-             error: function(response){
-                  $('#prodNameErr').text(response.responseJSON.errors.prod_name);
-                  $('#prodBrandErr').text(response.responseJSON.errors.prod_brand);
-                  $('#prodPriceErr').text(response.responseJSON.errors.prod_price);
-                  $('#prodTaxErr').text(response.responseJSON.errors.prod_tax);
-                  $('#categoryErr').text(response.responseJSON.errors.category);
-                  $('#imageErr').text(response.responseJSON.errors.prod_image_path);
-                  $('#prodDescErr').text(response.responseJSON.errors.prod_description);
-             }
-         });
-  });
-    
-</script>
-
+           });
+    });
+      
+  </script>
 
 @endsection
