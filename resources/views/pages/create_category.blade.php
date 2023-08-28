@@ -5,11 +5,11 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card mb-4">
-        <h5 class="card-header">Add New Category</h5>  
+        <h5 class="card-header">Add New Category</h5>
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="successMsg" style="display: none" >
           Category saved successfully
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>           
+        </div>
         <!-- Account -->
         <div class="card-body">
           <form action="{{ route('category.store') }}" method="POST" id="create-category" enctype="multipart/form-data">
@@ -19,20 +19,20 @@
                 <label for="categoryname" class="form-label">Category Name</label>
                 <input class="form-control" type="text" id="catName" name="cat_name" value="{{old('cat_name')}}" autofocus/>
                 <span class="text-danger" id="name-input-error"></span>
-              </div>  
+              </div>
               <div class="mb-3 col-md-6">
                 <label for="category Image" class="form-label">Category Image</label>
                 <input type="file" class="form-control" name="cat_image_path" id="catImagePath">
                 <span class="text-danger" id="image-input-error"></span>
-              </div>  
+              </div>
               <div class="mb-3 col-md-6">
                 <label for="Description" class="form-label">Description</label>
                 <textarea class="form-control" name="cat_description" id="catDescription" rows="3"></textarea>
                 <span class="text-danger" id="desc-input-error"></span>
-              </div> 
-              
+              </div>
+
               <div class="mb-3 col-md-6">
-                <img id="preview-image" width="300px">
+                <img id="preview-image" width="50%">
               </div>
             </div>
             <div class="mt-2">
@@ -55,14 +55,14 @@
       }
   });
 
-  $('#catImagePath').change(function(){    
+  $('#catImagePath').change(function(){
       let reader = new FileReader();
- 
-      reader.onload = (e) => { 
-          $('#preview-image').attr('src', e.target.result); 
-      }   
-      reader.readAsDataURL(this.files[0]); 
-   
+
+      reader.onload = (e) => {
+          $('#preview-image').attr('src', e.target.result);
+      }
+      reader.readAsDataURL(this.files[0]);
+
   });
 
   $('#create-category').submit(function(e) {
@@ -93,7 +93,7 @@
              }
          });
   });
-    
+
 </script>
 
 
